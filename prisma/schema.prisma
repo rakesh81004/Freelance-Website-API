@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int        @id @default(autoincrement())
+  email      String     @unique
+  profile    Profile?   @relation(fields: [profileId], references: [id])
+  profileId  Int?       @unique
+  posts      Post[]     // One-to-Many
+  bookings   Booking[]  // Many-to-Many through Booking
+  projects   Project[]  // One-to-Many (User ↔ Projects)
+}
+
+model Profile {
+  id     Int    @id @default(autoincrement())
+  bio    String
+  user   User?  @relation
+}
+
+model Post {
+  id      Int     @id @default(autoincrement())
+  title   String
+  content String
+  userId  Int
+  user    User    @relation(fields: [userId], references: [id])
+}
+
+model Freelancer {
+  id        Int        @id @default(autoincrement())
+  name      String
+  bookings  Booking[]
+}
+
+model Booking {
+  id           Int        @id @default(autoincrement())
+  userId       Int
+  freelancerId Int
+  status       String
+  user         User       @relation(fields: [userId], references: [id])
+  freelancer   Freelancer @relation(fields: [freelancerId], references: [id])
+}
+
+model Project {
+  id          Int    @id @default(autoincrement())
+  title       String
+  description String
+  budget      Float
+  status      String @default("open")
+  userId      Int
+  user        User   @relation(fields: [userId], references: [id])
+}
