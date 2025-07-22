@@ -5,19 +5,21 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-// Route imports
+// ✅ Import routes once
+const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const projectRoutes = require('./routes/projectRoutes');
+const postRoutes = require('./routes/postRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 
-// Use routes
+// ✅ Use routes
+app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/projects', projectRoutes);
+app.use('/posts', postRoutes);
 app.use('/bookings', bookingRoutes);
 
-app.use('/posts', require('./routes/postRoutes'));
-
-// Start server
+// ✅ Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);

@@ -1,30 +1,30 @@
 const express = require('express');
 const router = express.Router();
-const userController = require('../controllers/userController');
-
-router.post('/create-with-profile', userController.createUserWithProfile);
-router.post('/:id/posts', userController.createPostForUser);
-router.get('/:id/bookings', userController.getUserBookings);
-
-module.exports = router;
+const auth = require('../middleware/auth');
 
 const {
   registerUser,
   getAllUsers,
   getUserById,
   updateUserById,
-  deleteUserById
+  deleteUserById,
+  createUserWithProfile,
+  createPostForUser,
+  getUserBookings
 } = require('../controllers/userController');
 
-// Register a new user
+// ✅ Public Route: Register a new user
 router.post('/register', registerUser);
 
-// 🔥 New: Fetch all users
-router.get('/', getAllUsers);
-router.get('/:id', getUserById); // 🔥 This line enables /users/:id
-router.put('/:id', updateUserById);
-router.delete('/:id', deleteUserById);
+// ✅ Protected Routes (Require Token)
+router.get('/', auth, getAllUsers);
+router.get('/:id', auth, getUserById);
+router.put('/:id', auth, updateUserById);
+router.delete('/:id', auth, deleteUserById);
 
-
+// ✅ Nested Functional Routes
+router.post('/create-with-profile', auth, createUserWithProfile);
+router.post('/:id/posts', auth, createPostForUser);
+router.get('/:id/bookings', auth, getUserBookings);
 
 module.exports = router;

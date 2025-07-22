@@ -10,12 +10,14 @@ datasource db {
 model User {
   id         Int        @id @default(autoincrement())
   email      String     @unique
+  password   String     
   profile    Profile?   @relation(fields: [profileId], references: [id])
   profileId  Int?       @unique
-  posts      Post[]     // One-to-Many
-  bookings   Booking[]  // Many-to-Many through Booking
-  projects   Project[]  // One-to-Many (User ↔ Projects)
+  posts      Post[]
+  bookings   Booking[]
+  projects   Project[]
 }
+ 
 
 model Profile {
   id     Int    @id @default(autoincrement())

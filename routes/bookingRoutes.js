@@ -1,20 +1,23 @@
 const express = require('express');
 const router = express.Router();
-
-const bookingController = require('../controllers/bookingController');
-
-router.post('/create', bookingController.createBooking);
-
-module.exports = router;
-
+const auth = require('../middleware/auth'); // 🔐 Import middleware
 const {
+  createBooking,
   getAllBookings,
   getBookingById,
   deleteBookingById
 } = require('../controllers/bookingController');
-  
-router.get('/', getAllBookings);
-router.get('/:id', getBookingById);
-router.delete('/:id', deleteBookingById);
+
+// 📝 Create a new booking (protected)
+router.post('/create', auth, createBooking);
+
+// 📥 Get all bookings (protected)
+router.get('/', auth, getAllBookings);
+
+// 🔍 Get a booking by ID (protected)
+router.get('/:id', auth, getBookingById);
+
+// ❌ Delete booking by ID (protected)
+router.delete('/:id', auth, deleteBookingById);
 
 module.exports = router;
